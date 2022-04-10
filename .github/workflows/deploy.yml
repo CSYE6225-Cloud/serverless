@@ -1,0 +1,40 @@
+name: deployment
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+env:
+  ARTIFACT_NAME: serverless-1.0-SNAPSHOT.jar
+  FUNCTION_NAME: email-verify
+
+jobs:
+  deploy:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # mvn package
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Package
+        run: mvn --batch-mode package
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.GH_ACTION_AWS_ACCESS_KEY }} # lambda function uplaod ami
+          aws-secret-access-key: ${{ secrets.GH_ACTION_AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: deploy .zip file to lambda function
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ env.FUNCTION_NAME }} \
+            --zip-file fileb://target/${{ env.ARTIFACT_NAME }}.jar
