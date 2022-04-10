@@ -10,7 +10,6 @@ import software.amazon.awssdk.services.ses.model.*;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class UserCreateVerification implements RequestHandler<SNSEvent, String> {
 
