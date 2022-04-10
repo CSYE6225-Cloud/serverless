@@ -7,7 +7,9 @@ on:
 
 env:
   ARTIFACT_NAME: serverless-1.0-SNAPSHOT.jar
-  FUNCTION_NAME: email-verify
+  FUNCTION_NAME: user-create-verification
+  AWS_REGION: us-east-1
+  PYTHON_WD: lambda_python
 
 jobs:
   deploy:
@@ -17,19 +19,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # mvn package
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-      - name: Package
-        run: mvn --batch-mode package
+      - name: package python to zip file
+        run: |
+          zip ${{ env.PYTHON_WD }}/${{ env.FUNCTION_NAME }}.zip ${{ env.PYTHON_WD }}/${{ env.FUNCTION_NAME }}.py
 
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.GH_ACTION_AWS_ACCESS_KEY }} # lambda function uplaod ami
+          aws-access-key-id: ${{ secrets.GH_ACTION_AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.GH_ACTION_AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
@@ -37,4 +34,4 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name ${{ env.FUNCTION_NAME }} \
-            --zip-file fileb://target/${{ env.ARTIFACT_NAME }}.jar
+            --zip-file fileb://${{ env.PYTHON_WD }}/${{ env.ARTIFACT_NAME }}.zip
