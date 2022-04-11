@@ -6,14 +6,16 @@ OK = '200 OK'
 SUBJET = 'CSYE6225 Webapp Account Register Confirmation'
 SEND_NAME = "noreply"
 CONFRIM_URI =  "/v1/verifyUserEmail"
-EMAIL_TEMP = """<p>Hello {},<br><br>
-            You're receiving this email because your email address was used to register a webapp account.<br><br>
-            Please click this link to verify your account register:<br>
-            <a href=\"{}\">{}</a><br>
-            the link will be expired in 5 minutes<br><br>
-            Kind Regards,<br>
-            CSYE6225 Spring 2022<br>
-            {}</p>"""
+EMAIL_TEMP = """
+    <p>Hello {},</p>
+    <p>You're receiving this email because your email address was used to register a webapp account.</p>
+    <p>Please click this link to verify your account register:<br>
+    <a href=\"http://{}\">{}</a><br>
+    the link will be expired in 5 minutes
+    </p>Kind Regards,<br>
+    CSYE6225 Spring 2022<br>
+    {}</p>
+"""
 
 def lambda_handler(event, context):
     print("## START: ")
