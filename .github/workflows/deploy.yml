@@ -21,7 +21,8 @@ jobs:
 
       - name: package python to zip file
         run: |
-          zip ${{ env.PYTHON_WD }}/${{ env.FUNCTION_NAME }}.zip ${{ env.PYTHON_WD }}/${{ env.FUNCTION_NAME }}.py
+          cd ${{ env.PYTHON_WD }}
+          zip ${{ env.FUNCTION_NAME }}.zip ${{ env.FUNCTION_NAME }}.py
 
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v1
