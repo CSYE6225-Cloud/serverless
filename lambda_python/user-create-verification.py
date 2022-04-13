@@ -1,3 +1,4 @@
+import email
 import json
 import os
 import boto3
@@ -23,6 +24,22 @@ def lambda_handler(event, context):
     print(event)
     message = json.loads(event['Records'][0]['Sns']['Message'])
     print(message)
+
+    # check email sent status
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(os.getenv('EMAIL_TRACKER_TABLE'))
+    response = table.get_item(
+        Key = {
+            'email': message['email']
+        }
+    )
+    print('## ITEM:')
+    print(response)
+    if response != None:
+        print("## MESSAGE: Already sent email to: " + message['email'])
+        return
+
+    # send emails
     ses_client = boto3.client('ses')
     region = os.environ['AWS_REGION']
     domain = os.environ['DOMAIN']
