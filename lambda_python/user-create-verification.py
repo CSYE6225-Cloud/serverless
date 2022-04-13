@@ -12,7 +12,7 @@ EMAIL_TEMP = """
     <p>You're receiving this email because your email address was used to register a webapp account.</p>
     <p>Please click this link to verify your account register:<br>
     <a href=\"http://{}\">{}</a><br>
-    the link will be expired in 5 minutes
+    the link will be expired in {} minutes
     </p>Kind Regards,<br>
     CSYE6225 Spring 2022<br>
     {}</p>
@@ -45,7 +45,7 @@ def lambda_handler(event, context):
     domain = os.environ['DOMAIN']
     sender = SEND_NAME + '@' + domain
     verification_link = domain + CONFRIM_URI + '?email=' + message["email"] + "&token=" + message['token']
-    content = EMAIL_TEMP.format(message['first_name'], verification_link, verification_link, domain)
+    content = EMAIL_TEMP.format(message['first_name'], verification_link, verification_link, os.getenv('EXPIRED_TIME'), domain)
     send(ses_client, sender, message['email'], SUBJET, content)
     
     # record in DynamoDB
