@@ -35,7 +35,7 @@ def lambda_handler(event, context):
     )
     print('## ITEM:')
     print(response)
-    if response['Item'] != None:
+    if 'Item' in response:
         print("## MESSAGE: Already sent email to: " + message['email'])
         return
 
