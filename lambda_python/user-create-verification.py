@@ -48,6 +48,13 @@ def lambda_handler(event, context):
     content = EMAIL_TEMP.format(message['first_name'], verification_link, verification_link, domain)
     send(ses_client, sender, message['email'], SUBJET, content)
     
+    # record in DynamoDB
+    table.put_item(
+        Item = {
+            'email': message['email']
+        }
+    )
+
     return OK
 
 def send(ses_client, sender, recipient, subject, bodyHtml):
